@@ -1,0 +1,26 @@
+name: Run Subs Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run subs-check
+        uses: beck-8/subs-check@main
+        with:
+          config: config.yaml
+          urls: ${{ secrets.SUB_URL_1 }} ${{ secrets.SUB_URL_2 }} ${{ secrets.SUB_URL_3 }} ${{ secrets.SUB_URL_4 }} ${{ secrets.SUB_URL_5 }} ${{ secrets.SUB_URL_6 }} ${{ secrets.SUB_URL_7 }} ${{ secrets.SUB_URL_8 }} ${{ secrets.SUB_URL_9 }} ${{ secrets.SUB_URL_10 }}
+          combine: true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: subs_checked
+          path: ./output
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: output/*
